@@ -6,4 +6,4 @@ Program possibilities:<br>
 -Generating students for asking and answering questions<br>
 -Managing students rating <br>
 -Filter students by fields<br>
-Program runs from run.bat in RunProgram path.<br>
+To run program use run.bat from RunProgram path.<br>

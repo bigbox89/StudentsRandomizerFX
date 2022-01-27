@@ -1,5 +1,9 @@
-package com.github.bigbox89.studentsrandomizer;
+package com.github.bigbox89.studentsrandomizer.View;
 
+import com.github.bigbox89.studentsrandomizer.Controllers.StudentsController;
+import com.github.bigbox89.studentsrandomizer.Model.Student;
+import com.github.bigbox89.studentsrandomizer.Repository.FileHandler;
+import com.github.bigbox89.studentsrandomizer.Repository.IHandler;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 public class UICreator {
 
@@ -534,6 +537,7 @@ public class UICreator {
             public void handle(ActionEvent event) {
                 Dialog<Student> dialog = new Dialog<>();
                 dialog.setTitle("Сгенерировать опрос студентов.");
+
                 Alert unAskedAlert = new Alert(AlertType.ERROR, "Количество не задававших вопрос студентов: 0", ButtonType.YES);
                 Alert unAnsweredAlert = new Alert(AlertType.ERROR, "Количество не отвечавших студентов: 0", ButtonType.YES);
 
@@ -546,36 +550,11 @@ public class UICreator {
                     studentsCrew.add((Student) arr[i]);
                 }
 
-                if (generateIfNotAskBox.isSelected()) {
-                    List<Student> unaskedStudents = studentsCrew
-                            .stream()
-                            .filter(e -> e.getAsked() == 0)
-                            .collect(Collectors.toList());
+                StudentsController studentsController = new StudentsController(unAskedAlert, unAnsweredAlert, studentsCrew, generateIfNotAskBox);
+                studentsForAsking = studentsController.getStudents();
 
-                    List<Student> unasweredStudents = studentsCrew
-                            .stream()
-                            .filter(e -> e.getAnswered() == 0)
-                            .collect(Collectors.toList());
+                if (studentsForAsking == null) return;
 
-                    if (unaskedStudents.size() == 0) {
-                        unAskedAlert.showAndWait();
-                    }
-
-                    if (unasweredStudents.size() == 0) {
-                        unAnsweredAlert.showAndWait();
-                    }
-
-                    if (unAskedAlert.getResult() == ButtonType.YES || unAnsweredAlert.getResult() == ButtonType.YES) {
-                        return;
-                    }
-
-                    studentsForAsking = generateRandom(unaskedStudents, unasweredStudents);
-
-                } else {
-                    studentsForAsking = generateRandom(studentsCrew, studentsCrew);
-                }
-
-                assert studentsForAsking != null;
                 Student askingStudent = studentsForAsking[0];
                 Student answeringStudent = studentsForAsking[1];
 
@@ -681,32 +660,5 @@ public class UICreator {
         primaryStage.setTitle("Система опроса студентов");
 
         primaryStage.show();
-    }
-
-    private Student[] generateRandom(List<Student> studentsForAsking, List<Student> studentsForAnswering) {
-        Student[] randStudents = new Student[2];
-        Random randNumsList = new Random();
-        //получаем случайный номер студента
-
-        int student1 = randNumsList.nextInt(studentsForAsking.size());
-        int student2 = randNumsList.nextInt(studentsForAnswering.size());
-
-        Student askingStudent = studentsForAsking.get(student1);
-        Student answeringStudent = studentsForAnswering.get(student2);
-
-        if (checkCommand(askingStudent, answeringStudent)) {
-            generateRandom(studentsForAsking, studentsForAnswering);
-
-        } else {
-            randStudents[0] = askingStudent;
-            randStudents[1] = answeringStudent;
-
-            return randStudents;
-        }
-        return null;
-    }
-
-    private boolean checkCommand(Student first, Student second) {
-        return Objects.equals(first.getCommand(), second.getCommand());
     }
 }

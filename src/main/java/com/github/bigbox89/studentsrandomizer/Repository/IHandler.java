@@ -1,4 +1,6 @@
-package com.github.bigbox89.studentsrandomizer;
+package com.github.bigbox89.studentsrandomizer.Repository;
+
+import com.github.bigbox89.studentsrandomizer.Model.Student;
 
 import java.util.ArrayList;
 

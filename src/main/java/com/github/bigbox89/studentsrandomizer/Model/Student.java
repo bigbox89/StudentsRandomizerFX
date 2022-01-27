@@ -1,4 +1,4 @@
-package com.github.bigbox89.studentsrandomizer;
+package com.github.bigbox89.studentsrandomizer.Model;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -48,28 +48,28 @@ public class Student {
     }
 
     /**
-     * @return the name
+     * @return the command
      */
     public String getCommand() {
         return command.get();
     }
 
     /**
-     * @param command the name to set
+     * @param command the command to set
      */
     public void setCommand(String command) {
         this.command.set(command);
     }
 
     /**
-     * @return the country
+     * @return the name
      */
     public String getName() {
         return name.get();
     }
 
     /**
-     * @param name the country to set
+     * @param name the name  to set
      */
     public void setName(String name) {
         this.name.set(name);
@@ -77,28 +77,28 @@ public class Student {
 
 
     /**
-     * @return the actors
+     * @return the homework
      */
     public String getHomework() {
         return homework.get();
     }
 
     /**
-     * @param homework the actors to set
+     * @param homework the homework to Set
      */
     public void setHomework(String homework) {
         this.homework.set(homework);
     }
 
     /**
-     * @return the language
+     * @return the comment
      */
     public String getComment() {
         return comment.get();
     }
 
     /**
-     * @param comment the language to set
+     * @param comment  the comment to set
      */
     public void setComment(String comment) {
         this.comment.set(comment);
@@ -120,42 +120,42 @@ public class Student {
 
 
     /**
-     * @return the director
+     * @return the second name
      */
     public String getSecondName() {
         return secondName.get();
     }
 
     /**
-     * @param secondName the director to set
+     * @param secondName the second name to set
      */
     public void setSecondName(String secondName) {
         this.secondName.set(secondName);
     }
 
     /**
-     * @return the year
+     * @return the test score
      */
     public Integer getTestBall() {
         return testBall.get();
     }
 
     /**
-     * @param testBall the year to set
+     * @param testBall the test score to set
      */
     public void setTestBall(Integer testBall) {
         this.testBall.set(testBall);
     }
 
     /**
-     * @return the duration
+     * @return the number of classes skippings
      */
     public Integer getNumPropuskov() {
         return numPropuskov.get();
     }
 
     /**
-     * @param numPropuskov the duration to set
+     * @param numPropuskov the number of classes skippings to set
      */
     public void setNumPropuskov(Integer numPropuskov) {
         this.numPropuskov.set(numPropuskov);

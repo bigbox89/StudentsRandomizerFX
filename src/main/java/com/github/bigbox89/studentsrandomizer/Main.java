@@ -1,5 +1,6 @@
 package com.github.bigbox89.studentsrandomizer;
 
+import com.github.bigbox89.studentsrandomizer.View.UICreator;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

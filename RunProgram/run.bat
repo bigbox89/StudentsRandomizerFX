@@ -1,0 +1,1 @@
+java --module-path "javafx-sdk-17.0.2\lib" --add-modules=javafx.controls,javafx.fxml --enable-preview -cp StudentsRandomizerFX.jar com.github.bigbox89.studentsrandomizer.Main

@@ -21,11 +21,9 @@ import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 public class UICreator {
 
@@ -104,9 +102,13 @@ public class UICreator {
         filterBtn.setMaxWidth(Double.MAX_VALUE);
         grid.add(filterBtn, 0, 7);
 
+        CheckBox generateIfNotAskBox = new CheckBox();
+        generateIfNotAskBox.setText("Опрашивать оставшихся");
+        grid.add(generateIfNotAskBox, 0, 8);
+
         Button generateBtn = new Button("Сгенерировать опрос");
         generateBtn.setMaxWidth(Double.MAX_VALUE);
-        grid.add(generateBtn, 0, 8);
+        grid.add(generateBtn, 0, 9);
 
 
         Text infoTxt = new Text("Запущено");
@@ -187,7 +189,6 @@ public class UICreator {
                 aboutAlert.setHeaderText(null);
                 aboutAlert.setContentText(
                         "Система опроса студентов\n\n2022 г.");
-
                 aboutAlert.showAndWait();
             }
         });
@@ -442,8 +443,8 @@ public class UICreator {
                 TextField counTxt = new TextField();
                 TextField actTxt = new TextField();
                 TextField langTxt = new TextField();
-                CheckBox seenBox = new CheckBox();
-                CheckBox answeredBox = new CheckBox();
+                CheckBox askingBox = new CheckBox();
+                CheckBox answeringBox = new CheckBox();
 
                 grid.add(new Label("Команда :"), 0, 0);
                 grid.add(nameTxt, 1, 0);
@@ -459,10 +460,10 @@ public class UICreator {
                 grid.add(langTxt, 1, 5);
                 grid.add(new Label("Количество пропусков :"), 0, 6);
                 grid.add(durTxt, 1, 6);
-                grid.add(new Label("Задавал вопрос :"), 0, 7);
-                grid.add(seenBox, 1, 7);
-                grid.add(new Label("Отвечал на вопрос :"), 0, 8);
-                grid.add(answeredBox, 1, 8);
+                grid.add(new Label("Задал вопрос:"), 0, 7);
+                grid.add(askingBox, 1, 7);
+                grid.add(new Label("Ответил на вопрос :"), 0, 8);
+                grid.add(answeringBox, 1, 8);
                 dialog.getDialogPane().setContent(grid);
 
                 // Request focus on the username field by default.
@@ -502,10 +503,10 @@ public class UICreator {
                         if (durTxt.getText().length() != 0)
                             dur = durTxt.getText();
 
-                        if (seenBox.isSelected())
+                        if (askingBox.isSelected())
                             asked = 1;
 
-                        if (answeredBox.isSelected())
+                        if (answeringBox.isSelected())
                             answered = 1;
 
                         return new Student(name, dir, country, actors, lang, year, dur, asked, answered, rait
@@ -533,22 +534,50 @@ public class UICreator {
             public void handle(ActionEvent event) {
                 Dialog<Student> dialog = new Dialog<>();
                 dialog.setTitle("Сгенерировать опрос студентов.");
+                Alert unAskedAlert = new Alert(AlertType.ERROR, "Количество не задававших вопрос студентов: 0", ButtonType.YES);
+                Alert unAnsweredAlert = new Alert(AlertType.ERROR, "Количество не отвечавших студентов: 0", ButtonType.YES);
 
                 Object[] arr = studentsTable.getItems().toArray();
                 List<Student> studentsCrew = new ArrayList<>();
+
+                Student[] studentsForAsking = new Student[2];
 
                 for (int i = 0; i < arr.length; i++) {
                     studentsCrew.add((Student) arr[i]);
                 }
 
-                Student[] randStudents = new Student[2];
-                Random randNumsList = new Random();
-                //получаем случайный номер студента
-                int student1 = randNumsList.nextInt(studentsCrew.size());
-                int student2 = randNumsList.nextInt(studentsCrew.size());
+                if (generateIfNotAskBox.isSelected()) {
+                    List<Student> unaskedStudents = studentsCrew
+                            .stream()
+                            .filter(e -> e.getAsked() == 0)
+                            .collect(Collectors.toList());
 
-                Student askingStudent = studentsCrew.get(student1);
-                Student answeringStudent = studentsCrew.get(student2);
+                    List<Student> unasweredStudents = studentsCrew
+                            .stream()
+                            .filter(e -> e.getAnswered() == 0)
+                            .collect(Collectors.toList());
+
+                    if (unaskedStudents.size() == 0) {
+                        unAskedAlert.showAndWait();
+                    }
+
+                    if (unasweredStudents.size() == 0) {
+                        unAnsweredAlert.showAndWait();
+                    }
+
+                    if (unAskedAlert.getResult() == ButtonType.YES || unAnsweredAlert.getResult() == ButtonType.YES) {
+                        return;
+                    }
+
+                    studentsForAsking = generateRandom(unaskedStudents, unasweredStudents);
+
+                } else {
+                    studentsForAsking = generateRandom(studentsCrew, studentsCrew);
+                }
+
+                assert studentsForAsking != null;
+                Student askingStudent = studentsForAsking[0];
+                Student answeringStudent = studentsForAsking[1];
 
                 // Set the button types.
                 ButtonType okBtn = new ButtonType("Сохранить", ButtonData.OK_DONE);
@@ -587,7 +616,6 @@ public class UICreator {
 
                 grid.add(new Label("Баллы за ответ :"), 0, 3);
                 grid.add(answerRate, 1, 3);
-
 
                 grid.add(new Label("Вопрос зачтен :"), 0, 4);
                 grid.add(askedBox, 1, 4);
@@ -653,5 +681,32 @@ public class UICreator {
         primaryStage.setTitle("Система опроса студентов");
 
         primaryStage.show();
+    }
+
+    private Student[] generateRandom(List<Student> studentsForAsking, List<Student> studentsForAnswering) {
+        Student[] randStudents = new Student[2];
+        Random randNumsList = new Random();
+        //получаем случайный номер студента
+
+        int student1 = randNumsList.nextInt(studentsForAsking.size());
+        int student2 = randNumsList.nextInt(studentsForAnswering.size());
+
+        Student askingStudent = studentsForAsking.get(student1);
+        Student answeringStudent = studentsForAnswering.get(student2);
+
+        if (checkCommand(askingStudent, answeringStudent)) {
+            generateRandom(studentsForAsking, studentsForAnswering);
+
+        } else {
+            randStudents[0] = askingStudent;
+            randStudents[1] = answeringStudent;
+
+            return randStudents;
+        }
+        return null;
+    }
+
+    private boolean checkCommand(Student first, Student second) {
+        return Objects.equals(first.getCommand(), second.getCommand());
     }
 }

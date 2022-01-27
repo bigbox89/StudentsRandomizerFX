@@ -1,5 +1,9 @@
 # StudentsRandomizerFX
 Program for managing students in online course.
 Students date stored in .csv file
-Mentor can manage data: edit, add, delete students, and also he can get student for askin and answering question.
+Program possibilities:
+-Managing students data (add, edit, delete students)
+-Generating students for asking and answering questions
+-Managing students rating 
+-Filter students by fields
 Program runs from run.bat in RunProgram path.

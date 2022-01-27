@@ -35,10 +35,14 @@ public class Student {
         this.secondName = new SimpleStringProperty(secondName);
 
         this.asked = new SimpleBooleanProperty(false);
-        if(asked == 1){this.asked = new SimpleBooleanProperty(true);}
+        if (asked == 1) {
+            this.asked = new SimpleBooleanProperty(true);
+        }
 
         this.answered = new SimpleBooleanProperty(false);
-        if(answered == 1){this.answered = new SimpleBooleanProperty(true);}
+        if (answered == 1) {
+            this.answered = new SimpleBooleanProperty(true);
+        }
 
         this.name = new SimpleStringProperty(name);
         this.homework = new SimpleStringProperty(homework);
@@ -75,7 +79,6 @@ public class Student {
         this.name.set(name);
     }
 
-
     /**
      * @return the homework
      */
@@ -98,7 +101,7 @@ public class Student {
     }
 
     /**
-     * @param comment  the comment to set
+     * @param comment the comment to set
      */
     public void setComment(String comment) {
         this.comment.set(comment);
@@ -117,7 +120,6 @@ public class Student {
     public void setRating(Float rating) {
         this.rating.set(rating);
     }
-
 
     /**
      * @return the second name
@@ -166,7 +168,9 @@ public class Student {
      */
     public int getAsked() {
         int i = 0;
-        if(this.asked.getValue()){i = 1;}
+        if (this.asked.getValue()) {
+            i = 1;
+        }
         return i;
     }
 
@@ -175,17 +179,18 @@ public class Student {
      */
     public void setAsked(int asked) {
         this.asked.set(false);
-        if(asked == 1)
-        this.asked.set(true);
+        if (asked == 1)
+            this.asked.set(true);
     }
-
 
     /**
      * @return the answered
      */
     public int getAnswered() {
         int i = 0;
-        if(this.answered.getValue()){i = 1;}
+        if (this.answered.getValue()) {
+            i = 1;
+        }
         return i;
     }
 
@@ -194,25 +199,22 @@ public class Student {
      */
     public void setAnswered(int answered) {
         this.answered.set(false);
-        if(answered == 1)
+        if (answered == 1)
             this.answered.set(true);
     }
 
-
     @Override
     public String toString() {
-        int pr = 0;
-        int pr2 = 0;
-        if(asked.get())
-            pr = 1;
-        else pr = 0;
+        int askedNum = 0;
+        int answeredNum = 0;
+        if (asked.get())
+            askedNum = 1;
 
-        if(answered.get())
-            pr2 = 1;
-        else pr2 = 0;
-  return new String(command.get() + ";" + secondName.get() + ";" + name.get()  + ";" + homework.get() + ";" + comment.get() + ";" + testBall.get() + ";" + numPropuskov.get() + ";"
-                + String.valueOf(pr) + ";"
-                + String.valueOf(pr2) + ";"
-                + String.valueOf(rating.get()) + System.lineSeparator());
+        if (answered.get())
+            answeredNum = 1;
+        return command.get() + ";" + secondName.get() + ";" + name.get() + ";" + homework.get() + ";" + comment.get() + ";" + testBall.get() + ";" + numPropuskov.get() + ";"
+                + askedNum + ";"
+                + answeredNum + ";"
+                + rating.get() + System.lineSeparator();
     }
 }

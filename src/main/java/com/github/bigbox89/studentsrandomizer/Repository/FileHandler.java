@@ -3,17 +3,15 @@ package com.github.bigbox89.studentsrandomizer.Repository;
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class FileHandler implements IHandler {
-	private FileWriter fw;
-	private OutputStreamWriter fwO;
 	private FileReader fr;
-	private InputStreamReader frI;
 	private BufferedReader br;
 	private BufferedReader brr;
-	private File f;
-	private ArrayList<Student> students;
+	private final File f;
+	private final ArrayList<Student> students;
 
 	public FileHandler(File f) {
 		students = new ArrayList<>();
@@ -23,20 +21,20 @@ public class FileHandler implements IHandler {
 		this.f = f;
 		try {
 			fr = new FileReader(f);
-			frI= new InputStreamReader(
-					new FileInputStream(f.getPath()), "UTF-8");
+			InputStreamReader frI = new InputStreamReader(
+					new FileInputStream(f.getPath()), StandardCharsets.UTF_8);
 			br = new BufferedReader(fr);
 			brr = new BufferedReader(frI);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// read all movies and save them in arraylist movies
+		// read all students and save them in arraylist students
 		loadStudents();
 	}
 
 	private void loadStudents() {
-		String student = null;
+		String student;
 
 		try {
 			brr.readLine();
@@ -60,9 +58,9 @@ public class FileHandler implements IHandler {
 
 		if (students.add(new Student(m.getCommand(), m.getSecondName(), m.getName(),m.getHomework(), m.getComment(), Integer.toString(m.getTestBall()),Integer.toString(m.getNumPropuskov()),
 				 m.getAsked(), m.getAnswered(), Float.toString(m.getRating()))))
-			return new String("Студент добавлен.");
+			return "Студент добавлен.";
 		else
-			return new String("Ошибка.");
+			return "Ошибка.";
 	}
 
 	@Override
@@ -123,14 +121,12 @@ public class FileHandler implements IHandler {
 				break;
 			}
 		}
-
 		students.remove(toRemove);
 	}
 
 	@Override
 	public ArrayList<Student> filterStudents(Student filter) {
-		// TODO - check opciju koji se fieldovi gledaju
-		ArrayList<Student> filteredMovies = new ArrayList<>();
+		ArrayList<Student> filteredStudents = new ArrayList<>();
 		String tempFilterName = filter.getCommand();
 		String tempFilterDir = filter.getSecondName();
 		int tempFilterYear = filter.getTestBall();
@@ -144,10 +140,10 @@ public class FileHandler implements IHandler {
 
 		if (tempFilterDir.equals("")) // because an empty string occurs in every
 										// string
-			tempFilterDir = "zzzz";
+			tempFilterDir = "pzazz";
 		if (tempFilterName.equals("")) // because an empty string occurs in
 										// every string
-			tempFilterName = "zzzz";
+			tempFilterName = "pzazz";
 
 		for (Student m : students) {
 			if (m.getCommand().contains(tempFilterName) || m.getSecondName().contains(tempFilterDir)
@@ -156,10 +152,10 @@ public class FileHandler implements IHandler {
 			|| m.getComment().contains(tempFilterLanguage)  || m.getRating().equals(tempFilterRating)
 			|| m.getAsked() == tempFilterSeen || m.getAnswered() == tempFilterAnswered)
 
-				filteredMovies.add(m);
+				filteredStudents.add(m);
 		}
 
-		return filteredMovies;
+		return filteredStudents;
 	}
 
 	@Override
@@ -256,8 +252,8 @@ public class FileHandler implements IHandler {
 	public void closeConn() {
 
 		try {
-			fwO= new OutputStreamWriter(
-					new FileOutputStream(f.getPath()), "UTF-8");
+			OutputStreamWriter fwO = new OutputStreamWriter(
+					new FileOutputStream(f.getPath()), StandardCharsets.UTF_8);
 				fwO.write("КОМАНДА;ФАМИЛИЯ;ИМЯ;ДЗ;КОММЕНТ;БАЛЛЫ ТЕСТА;ПРОПУСКИ;СПРАШИВАЛ;ОТВЕЧАЛ;РЕЙТИНГ;" + System.lineSeparator());
 			for (Student m : students) {
 				fwO.write(m.toString());
@@ -265,10 +261,6 @@ public class FileHandler implements IHandler {
 			fwO.close();
 			fr.close();
 			br.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

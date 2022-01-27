@@ -5,35 +5,34 @@ import com.github.bigbox89.studentsrandomizer.Model.Student;
 import java.util.ArrayList;
 
 public interface IHandler {
-	public ArrayList<Student> selectAllStudents();
+	ArrayList<Student> selectAllStudents();
 
-	public ArrayList<Student> selectAskedStudents();
+	ArrayList<Student> selectAskedStudents();
 
-	public ArrayList<Student> selectUnAskedStudents();
+	ArrayList<Student> selectUnAskedStudents();
 
-	public ArrayList<Student> selectAnsweredStudents();
+	ArrayList<Student> selectAnsweredStudents();
 
-	public ArrayList<Student> selectUnAnsweredStudents();
+	ArrayList<Student> selectUnAnsweredStudents();
 
+	String addStudent(Student m);
 
-	public String addStudent(Student m);
+	void editStudent(Student newMovie, Student selectedMovie);
 
-	public void editStudent(Student newMovie, Student selectedMovie);
+	void editTwoStudents(Student newMovie, Student selectedMovie);
 
-	public void editTwoStudents(Student newMovie, Student selectedMovie);
+	void delStudent(Student m);
 
-	public void delStudent(Student m);
+	void markAsked(Student m);
 
-	public void markAsked(Student m);
+	void markUnAsked(Student m);
 
-	public void markUnAsked(Student m);
+	void markAnswered(Student m);
 
-	public void markAnswered(Student m);
+	void markUnAnswered(Student m);
 
-	public void markUnAnswered(Student m);
+	void closeConn();
 
-	public void closeConn();
-
-	public ArrayList<Student> filterStudents(Student m);
+	ArrayList<Student> filterStudents(Student m);
 
 }

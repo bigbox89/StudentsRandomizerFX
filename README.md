@@ -1,5 +1,5 @@
 # StudentsRandomizerFX
-Program for managing students in online course.
+Program for managing students in online course.<br>
 Students date stored in .csv file
 Program possibilities:
 -Managing students data (add, edit, delete students)

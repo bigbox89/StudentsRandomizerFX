@@ -56,7 +56,7 @@ public class FileHandler implements IHandler {
 	@Override
 	public String addStudent(Student m) {
 
-		if (students.add(new Student(m.getCommand(), m.getSecondName(), m.getName(),m.getHomework(), m.getComment(), Integer.toString(m.getTestBall()),Integer.toString(m.getNumPropuskov()),
+		if (students.add(new Student(m.getCommand(), m.getSecondName(), m.getName(),m.getHomework(), m.getComment(), Integer.toString(m.getTestBall()),Integer.toString(m.getNumSkippings()),
 				 m.getAsked(), m.getAnswered(), Float.toString(m.getRating()))))
 			return "Студент добавлен.";
 		else
@@ -73,7 +73,7 @@ public class FileHandler implements IHandler {
 				m.setHomework(newMovie.getHomework());
 				m.setComment(newMovie.getComment());
 				m.setTestBall(newMovie.getTestBall());
-				m.setNumPropuskov(newMovie.getNumPropuskov());
+				m.setNumSkippings(newMovie.getNumSkippings());
 				m.setAsked(newMovie.getAsked());
 				m.setAnswered(newMovie.getAnswered());
 				m.setRating(newMovie.getRating());
@@ -91,7 +91,7 @@ public class FileHandler implements IHandler {
 				m.setHomework(askedStudent.getHomework());
 				m.setComment(askedStudent.getComment());
 				m.setTestBall(askedStudent.getTestBall());
-				m.setNumPropuskov(askedStudent.getNumPropuskov());
+				m.setNumSkippings(askedStudent.getNumSkippings());
 				m.setAsked(askedStudent.getAsked());
 				m.setAnswered(askedStudent.getAnswered());
 				m.setRating(askedStudent.getRating());
@@ -104,7 +104,7 @@ public class FileHandler implements IHandler {
 				m.setHomework(answeredStudent.getHomework());
 				m.setComment(answeredStudent.getComment());
 				m.setTestBall(answeredStudent.getTestBall());
-				m.setNumPropuskov(answeredStudent.getNumPropuskov());
+				m.setNumSkippings(answeredStudent.getNumSkippings());
 				m.setAsked(answeredStudent.getAsked());
 				m.setAnswered(answeredStudent.getAnswered());
 				m.setRating(answeredStudent.getRating());
@@ -130,7 +130,7 @@ public class FileHandler implements IHandler {
 		String tempFilterName = filter.getCommand();
 		String tempFilterDir = filter.getSecondName();
 		int tempFilterYear = filter.getTestBall();
-		int tempFilterDur = filter.getNumPropuskov();
+		int tempFilterDur = filter.getNumSkippings();
 		String tempFilterCountry = filter.getName();
 		String tempFilterActors = filter.getHomework();
 		String tempFilterLanguage = filter.getComment();
@@ -147,7 +147,7 @@ public class FileHandler implements IHandler {
 
 		for (Student m : students) {
 			if (m.getCommand().contains(tempFilterName) || m.getSecondName().contains(tempFilterDir)
-					|| m.getTestBall().equals(tempFilterYear) || m.getNumPropuskov().equals(tempFilterDur)
+					|| m.getTestBall().equals(tempFilterYear) || m.getNumSkippings().equals(tempFilterDur)
 					|| m.getName().contains(tempFilterCountry)  || m.getHomework().contains(tempFilterActors)
 			|| m.getComment().contains(tempFilterLanguage)  || m.getRating().equals(tempFilterRating)
 			|| m.getAsked() == tempFilterSeen || m.getAnswered() == tempFilterAnswered)

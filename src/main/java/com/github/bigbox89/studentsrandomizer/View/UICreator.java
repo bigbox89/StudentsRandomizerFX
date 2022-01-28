@@ -1,5 +1,6 @@
 package com.github.bigbox89.studentsrandomizer.View;
 
+import com.github.bigbox89.studentsrandomizer.Controllers.GridPaneController;
 import com.github.bigbox89.studentsrandomizer.Controllers.StudentsController;
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 import com.github.bigbox89.studentsrandomizer.Repository.FileHandler;
@@ -149,7 +150,7 @@ public class UICreator {
         languageCol.prefWidthProperty().bind(studentsTable.widthProperty().multiply(0.15));
 
         TableColumn durationCol = new TableColumn<>("Количество пропусков");
-        durationCol.setCellValueFactory(new PropertyValueFactory<>("numPropuskov"));
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("numSkippings"));
         durationCol.prefWidthProperty().bind(studentsTable.widthProperty().multiply(0.15));
 
         TableColumn seenCol = new TableColumn<>("Задавал вопрос");
@@ -210,63 +211,30 @@ public class UICreator {
             dialog.getDialogPane().getButtonTypes().addAll(okBtn, ButtonType.CANCEL);
 
             // Create the username and password labels and fields.
-            GridPane grid1 = new GridPane();
-            grid1.setHgap(10);
-            grid1.setVgap(10);
-            grid1.setPadding(new Insets(20, 20, 10, 10));
+            GridPaneController grid1 = new GridPaneController();
 
-            TextField nameTxt = new TextField();
-            TextField dirTxt = new TextField();
-            TextField yearTxt = new TextField();
-            TextField durTxt = new TextField();
-            TextField counTxt = new TextField();
-            TextField actTxt = new TextField();
-            TextField langTxt = new TextField();
-            TextField raitTxt = new TextField();
-            CheckBox askedBox = new CheckBox();
-            CheckBox answeredBox = new CheckBox();
+            grid1.getGridPane().setHgap(10);
+            grid1.getGridPane().setVgap(10);
+            grid1.getGridPane().setPadding(new Insets(20, 20, 10, 10));
 
-            grid1.add(new Label("Команда :"), 0, 0);
-            grid1.add(nameTxt, 1, 0);
-            grid1.add(new Label("Имя :"), 0, 1);
-            grid1.add(dirTxt, 1, 1);
-            grid1.add(new Label("Фамилия :"), 0, 2);
-            grid1.add(counTxt, 1, 2);
-            grid1.add(new Label("Баллы теста :"), 0, 3);
-            grid1.add(yearTxt, 1, 3);
-            grid1.add(new Label("Рейтинг :"), 0, 4);
-            grid1.add(raitTxt, 1, 4);
-            grid1.add(new Label("Домашнее задание :"), 0, 5);
-            grid1.add(actTxt, 1, 5);
-            grid1.add(new Label("Комментарий :"), 0, 6);
-            grid1.add(langTxt, 1, 6);
-            grid1.add(new Label("Количество пропусков :"), 0, 7);
-            grid1.add(durTxt, 1, 7);
-            grid1.add(new Label("Задавал вопрос :"), 0, 8);
-            grid1.add(askedBox, 1, 8);
-            grid1.add(new Label("Отвечал на вопрос :"), 0, 9);
-            grid1.add(answeredBox, 1, 9);
-
-            dialog.getDialogPane().setContent(grid1);
+            dialog.getDialogPane().setContent(grid1.getGridPane());
 
             // Request focus on the username field by default.
-            Platform.runLater(nameTxt::requestFocus);
+            Platform.runLater(grid1.getNameTxt()::requestFocus);
 
             dialog.setResultConverter(dialogButton -> {
                 int asked = 0;
-                if (askedBox.isSelected()) {
+                if (grid1.getAskedBox().isSelected()) {
                     asked = 1;
                 }
 
                 int answered = 0;
-                if (askedBox.isSelected()) {
+                if (grid1.getAnsweredBox().isSelected()) {
                     answered = 1;
                 }
 
                 if (dialogButton == okBtn) {
-                    return new Student(nameTxt.getText(), dirTxt.getText(), counTxt.getText(), actTxt.getText(), langTxt.getText(), yearTxt.getText(), durTxt.getText(), asked, answered, raitTxt.getText()
-                    );
-
+                    return new Student(grid1.getCommandTxt().getText(), grid1.getSecondNameTxt().getText(), grid1.getNameTxt().getText(), grid1.getHomeworkTxt().getText(), grid1.getCommentTxt().getText(), grid1.getTestRaitingTxt().getText(), grid1.getNumSkippingsTxt().getText(), asked, answered,grid1.getRaitTxt().getText());
                 }
                 return null;
             });
@@ -278,9 +246,8 @@ public class UICreator {
                         + " Рейтинг =" + m.getRating()
                         + " Домашнее задание =" + m.getHomework()
                         + " Комментарий  =" + m.getComment()
-                        + " Количество пропусков  =" + m.getNumPropuskov()
+                        + " Количество пропусков  =" + m.getNumSkippings()
                         + " Задавал вопрос =" + m.getAsked());
-
 
                 String resultText = (handler.addStudent(m));
 
@@ -325,7 +292,7 @@ public class UICreator {
             TextField nameTxt = new TextField(selMov.getCommand());
             TextField dirTxt = new TextField(selMov.getSecondName());
             TextField yearTxt = new TextField(Integer.toString(selMov.getTestBall()));
-            TextField durTxt = new TextField(Integer.toString(selMov.getNumPropuskov()));
+            TextField durTxt = new TextField(Integer.toString(selMov.getNumSkippings()));
             TextField counTxt = new TextField(selMov.getName());
             TextField actTxt = new TextField(selMov.getHomework());
             TextField langTxt = new TextField(selMov.getComment());
@@ -387,7 +354,7 @@ public class UICreator {
             result.ifPresent(m -> {
                 System.out.println("UPDATE student SET Команда =\"" + m.getCommand() + "\", Баллы теста  =" + m.getTestBall() + ", Задавал вопрос ="
                         + m.getAsked() + ", Имя =(SELECT dirKey FROM director WHERE Команда =\"" + m.getSecondName()
-                        + "\"), Количество пропусков =" + m.getNumPropuskov() + " WHERE Команда =\"" + selMov.getCommand() + "\" AND Баллы теста="
+                        + "\"), Количество пропусков =" + m.getNumSkippings() + " WHERE Команда =\"" + selMov.getCommand() + "\" AND Баллы теста="
                         + selMov.getTestBall() + ";");
                 System.out.println("UPDATE Имя  SET name=\"" + m.getSecondName() + "\" WHERE name=\""
                         + selMov.getSecondName() + "\";");

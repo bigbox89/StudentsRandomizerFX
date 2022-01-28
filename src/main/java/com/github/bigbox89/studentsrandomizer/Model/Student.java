@@ -6,23 +6,28 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Student {
-    private SimpleStringProperty command, secondName, name, homework, comment;
-    private SimpleIntegerProperty testBall, numPropuskov;
+    private final SimpleStringProperty command;
+    private final SimpleStringProperty secondName;
+    private final SimpleStringProperty name;
+    private final SimpleStringProperty homework;
+    private final SimpleStringProperty comment;
+    private final SimpleIntegerProperty testBall;
+    private final SimpleIntegerProperty numSkippings;
     private SimpleBooleanProperty asked;
     private SimpleBooleanProperty answered;
     private SimpleFloatProperty rating;
 
-    public Student(String command, String secondName, String name, String homework, String comment, String testBall, String numPropuskov, int asked, int answered, String rating) {
+    public Student(String command, String secondName, String name, String homework, String comment, String testBall, String numSkippings, int asked, int answered, String rating) {
 
         if (!testBall.equals("")) {
             this.testBall = new SimpleIntegerProperty(Integer.parseInt(testBall));
         } else {
             this.testBall = new SimpleIntegerProperty(0);
         }
-        if (!numPropuskov.equals("")) {
-            this.numPropuskov = new SimpleIntegerProperty(Integer.parseInt(numPropuskov));
+        if (!numSkippings.equals("")) {
+            this.numSkippings = new SimpleIntegerProperty(Integer.parseInt(numSkippings));
         } else {
-            this.numPropuskov = new SimpleIntegerProperty(0);
+            this.numSkippings = new SimpleIntegerProperty(0);
         }
 
         if (!rating.equals("")) {
@@ -150,17 +155,17 @@ public class Student {
     }
 
     /**
-     * @return the number of classes skippings
+     * @return the number of classes skipping
      */
-    public Integer getNumPropuskov() {
-        return numPropuskov.get();
+    public Integer getNumSkippings() {
+        return numSkippings.get();
     }
 
     /**
-     * @param numPropuskov the number of classes skippings to set
+     * @param numSkippings the number of classes skippings to set
      */
-    public void setNumPropuskov(Integer numPropuskov) {
-        this.numPropuskov.set(numPropuskov);
+    public void setNumSkippings(Integer numSkippings) {
+        this.numSkippings.set(numSkippings);
     }
 
     /**
@@ -212,7 +217,7 @@ public class Student {
 
         if (answered.get())
             answeredNum = 1;
-        return command.get() + ";" + secondName.get() + ";" + name.get() + ";" + homework.get() + ";" + comment.get() + ";" + testBall.get() + ";" + numPropuskov.get() + ";"
+        return command.get() + ";" + secondName.get() + ";" + name.get() + ";" + homework.get() + ";" + comment.get() + ";" + testBall.get() + ";" + numSkippings.get() + ";"
                 + askedNum + ";"
                 + answeredNum + ";"
                 + rating.get() + System.lineSeparator();

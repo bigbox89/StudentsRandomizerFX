@@ -1,15 +1,13 @@
 package com.github.bigbox89.studentsrandomizer.View;
 
-import com.github.bigbox89.studentsrandomizer.Controllers.GridPaneController;
-import com.github.bigbox89.studentsrandomizer.Controllers.StudentsController;
+import com.github.bigbox89.studentsrandomizer.Services.GridPaneService;
+import com.github.bigbox89.studentsrandomizer.Services.StudentsService;
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 import com.github.bigbox89.studentsrandomizer.Repository.FileHandler;
 import com.github.bigbox89.studentsrandomizer.Repository.IHandler;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,10 +98,6 @@ public class UICreator {
         Button editBtn = new Button("Редактировать студента");
         editBtn.setMaxWidth(Double.MAX_VALUE);
         grid.add(editBtn, 0, 6);
-
-        Button filterBtn = new Button("Фильтр");
-        filterBtn.setMaxWidth(Double.MAX_VALUE);
-        grid.add(filterBtn, 0, 7);
 
         CheckBox generateIfNotAskBox = new CheckBox();
         generateIfNotAskBox.setText("Опрашивать оставшихся");
@@ -211,33 +204,13 @@ public class UICreator {
             dialog.getDialogPane().getButtonTypes().addAll(okBtn, ButtonType.CANCEL);
 
             // Create the username and password labels and fields.
-            GridPaneController grid1 = new GridPaneController();
-
-            grid1.getGridPane().setHgap(10);
-            grid1.getGridPane().setVgap(10);
-            grid1.getGridPane().setPadding(new Insets(20, 20, 10, 10));
-
+            GridPaneService grid1 = new GridPaneService();
             dialog.getDialogPane().setContent(grid1.getGridPane());
 
             // Request focus on the username field by default.
             Platform.runLater(grid1.getNameTxt()::requestFocus);
 
-            dialog.setResultConverter(dialogButton -> {
-                int asked = 0;
-                if (grid1.getAskedBox().isSelected()) {
-                    asked = 1;
-                }
-
-                int answered = 0;
-                if (grid1.getAnsweredBox().isSelected()) {
-                    answered = 1;
-                }
-
-                if (dialogButton == okBtn) {
-                    return new Student(grid1.getCommandTxt().getText(), grid1.getSecondNameTxt().getText(), grid1.getNameTxt().getText(), grid1.getHomeworkTxt().getText(), grid1.getCommentTxt().getText(), grid1.getTestRaitingTxt().getText(), grid1.getNumSkippingsTxt().getText(), asked, answered,grid1.getRaitTxt().getText());
-                }
-                return null;
-            });
+            dialog.setResultConverter(dialogButton -> dialogButton == okBtn ? grid1.getStudentFromGrid() : null);
 
             Optional<Student> result = dialog.showAndWait();
 
@@ -273,203 +246,34 @@ public class UICreator {
             Dialog<Student> dialog = new Dialog<>();
             dialog.setTitle("Редактировать студента.");
 
-            Student selMov = studentsTable.getSelectionModel().getSelectedItem();
-            if (selMov == null) {
+            Student selStudent = studentsTable.getSelectionModel().getSelectedItem();
+            if (selStudent == null) {
                 infoTxt.setText("Студент не выбран.");
                 return;
             }
-
             // Set the button types.
             ButtonType okBtn = new ButtonType("Редактировать", ButtonData.OK_DONE);
             dialog.getDialogPane().getButtonTypes().addAll(okBtn, ButtonType.CANCEL);
-
-            // Create the username and password labels and fields.
-            GridPane grid12 = new GridPane();
-            grid12.setHgap(10);
-            grid12.setVgap(10);
-            grid12.setPadding(new Insets(20, 20, 10, 10));
-
-            TextField nameTxt = new TextField(selMov.getCommand());
-            TextField dirTxt = new TextField(selMov.getSecondName());
-            TextField yearTxt = new TextField(Integer.toString(selMov.getTestBall()));
-            TextField durTxt = new TextField(Integer.toString(selMov.getNumSkippings()));
-            TextField counTxt = new TextField(selMov.getName());
-            TextField actTxt = new TextField(selMov.getHomework());
-            TextField langTxt = new TextField(selMov.getComment());
-            TextField raitTxt = new TextField(Float.toString(selMov.getRating()));
-            CheckBox seenBox = new CheckBox();
-            CheckBox answeredBox = new CheckBox();
-            if (selMov.getAsked() == 1)
-                seenBox.setSelected(true);
-            if (selMov.getAnswered() == 1)
-                answeredBox.setSelected(true);
-
-            grid12.add(new Label("Команда :"), 0, 0);
-            grid12.add(nameTxt, 1, 0);
-            grid12.add(new Label("Имя :"), 0, 1);
-            grid12.add(dirTxt, 1, 1);
-            grid12.add(new Label("Фамилия :"), 0, 2);
-            grid12.add(counTxt, 1, 2);
-            grid12.add(new Label("Баллы теста :"), 0, 3);
-            grid12.add(yearTxt, 1, 3);
-            grid12.add(new Label("Рейтинг:"), 0, 4);
-            grid12.add(raitTxt, 1, 4);
-            grid12.add(new Label("Домашнее задание :"), 0, 5);
-            grid12.add(actTxt, 1, 5);
-            grid12.add(new Label("Комментарий :"), 0, 6);
-            grid12.add(langTxt, 1, 6);
-            grid12.add(new Label("Количество пропусков :"), 0, 7);
-            grid12.add(durTxt, 1, 7);
-            grid12.add(new Label("Задавал вопрос :"), 0, 8);
-            grid12.add(seenBox, 1, 8);
-
-            grid12.add(new Label("Отвечал на вопрос :"), 0, 9);
-            grid12.add(answeredBox, 1, 9);
-
-            dialog.getDialogPane().setContent(grid12);
-
+            GridPaneService grid12 = new GridPaneService(selStudent);
+            dialog.getDialogPane().setContent(grid12.getGridPane());
             // Request focus on the name field by default.
-            Platform.runLater(nameTxt::requestFocus);
-
-            dialog.setResultConverter(dialogButton -> {
-                int asked = 0;
-                if (seenBox.isSelected()) {
-                    asked = 1;
-                }
-
-                int answered = 0;
-                if (answeredBox.isSelected()) {
-                    answered = 1;
-                }
-
-                if (dialogButton == okBtn) {
-                    return new Student(nameTxt.getText(), dirTxt.getText(), counTxt.getText(), actTxt.getText(), langTxt.getText(), yearTxt.getText(), durTxt.getText(), asked, answered, raitTxt.getText()
-                    );
-                }
-                return null;
-            });
+            Platform.runLater(grid12.getNameTxt()::requestFocus);
+            dialog.setResultConverter(dialogButton -> dialogButton == okBtn ? grid12.getStudentFromGrid() : null);
 
             Optional<Student> result = dialog.showAndWait();
-
             result.ifPresent(m -> {
                 System.out.println("UPDATE student SET Команда =\"" + m.getCommand() + "\", Баллы теста  =" + m.getTestBall() + ", Задавал вопрос ="
                         + m.getAsked() + ", Имя =(SELECT dirKey FROM director WHERE Команда =\"" + m.getSecondName()
-                        + "\"), Количество пропусков =" + m.getNumSkippings() + " WHERE Команда =\"" + selMov.getCommand() + "\" AND Баллы теста="
-                        + selMov.getTestBall() + ";");
+                        + "\"), Количество пропусков =" + m.getNumSkippings() + " WHERE Команда =\"" + selStudent.getCommand() + "\" AND Баллы теста="
+                        + selStudent.getTestBall() + ";");
                 System.out.println("UPDATE Имя  SET name=\"" + m.getSecondName() + "\" WHERE name=\""
-                        + selMov.getSecondName() + "\";");
-                handler.editStudent(m, selMov);
+                        + selStudent.getSecondName() + "\";");
+                handler.editStudent(m, selStudent);
 
                 infoTxt.setText("Студент отредактирован.");
                 selectAllBtn.fire();
                 numberOfRowsTxt.setText(Integer.toString(studentsTable.getItems().size()));
 
-            });
-
-        });
-
-        filterBtn.setOnAction(event -> {
-            Dialog<Student> dialog = new Dialog<>();
-            dialog.setTitle("Фильтр");
-
-            // Set the button types.
-            ButtonType okBtn = new ButtonType("Фильтр", ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(okBtn, ButtonType.CANCEL);
-
-            // Create the username and password labels and fields.
-            GridPane grid13 = new GridPane();
-            grid13.setHgap(10);
-            grid13.setVgap(10);
-            grid13.setPadding(new Insets(20, 20, 10, 10));
-
-            TextField nameTxt = new TextField();
-            TextField dirTxt = new TextField();
-            TextField yearTxt = new TextField();
-            TextField durTxt = new TextField();
-            TextField counTxt = new TextField();
-            TextField actTxt = new TextField();
-            TextField langTxt = new TextField();
-            CheckBox askingBox = new CheckBox();
-            CheckBox answeringBox = new CheckBox();
-
-            grid13.add(new Label("Команда :"), 0, 0);
-            grid13.add(nameTxt, 1, 0);
-            grid13.add(new Label("Имя :"), 0, 1);
-            grid13.add(dirTxt, 1, 1);
-            grid13.add(new Label("Фамилия :"), 0, 2);
-            grid13.add(counTxt, 1, 2);
-            grid13.add(new Label("Баллы теста :"), 0, 3);
-            grid13.add(yearTxt, 1, 3);
-            grid13.add(new Label("Домашнее задание :"), 0, 4);
-            grid13.add(actTxt, 1, 4);
-            grid13.add(new Label("Комментарий :"), 0, 5);
-            grid13.add(langTxt, 1, 5);
-            grid13.add(new Label("Количество пропусков :"), 0, 6);
-            grid13.add(durTxt, 1, 6);
-            grid13.add(new Label("Задал вопрос:"), 0, 7);
-            grid13.add(askingBox, 1, 7);
-            grid13.add(new Label("Ответил на вопрос :"), 0, 8);
-            grid13.add(answeringBox, 1, 8);
-            dialog.getDialogPane().setContent(grid13);
-
-            // Request focus on the username field by default.
-            Platform.runLater(nameTxt::requestFocus);
-
-            dialog.setResultConverter(dialogButton -> {
-                int asked = 0;
-                int answered = 0;
-                if (dialogButton == okBtn) {
-                    //set defaults for filtering
-                    String name = "null";
-                    String dir = "null";
-                    String country = "null";
-                    String actors = "null";
-                    String lang = "null";
-                    String year = "0";
-                    String dur = "0";
-                    String rait = "0.0";
-                    if (nameTxt.getText().length() != 0)
-                        name = nameTxt.getText();
-
-                    if (dirTxt.getText().length() != 0)
-                        dir = dirTxt.getText();
-
-                    if (counTxt.getText().length() != 0)
-                        country = counTxt.getText();
-
-                    if (actTxt.getText().length() != 0)
-                        actors = actTxt.getText();
-
-                    if (langTxt.getText().length() != 0)
-                        lang = langTxt.getText();
-
-                    if (yearTxt.getText().length() != 0)
-                        year = yearTxt.getText();
-
-                    if (durTxt.getText().length() != 0)
-                        dur = durTxt.getText();
-
-                    if (askingBox.isSelected())
-                        asked = 1;
-
-                    if (answeringBox.isSelected())
-                        answered = 1;
-
-                    return new Student(name, dir, country, actors, lang, year, dur, asked, answered, rait
-                    );
-                }
-                return null;
-            });
-
-            Optional<Student> result = dialog.showAndWait();
-
-            result.ifPresent(m -> {
-                studentsData = FXCollections.observableArrayList(handler.filterStudents(m));
-                studentsTable.setItems(studentsData);
-                studentsTable.refresh();
-
-                infoTxt.setText("Студенты отфильтрованы.");
-                numberOfRowsTxt.setText(Integer.toString(studentsTable.getItems().size()));
             });
 
         });
@@ -490,8 +294,8 @@ public class UICreator {
                 studentsCrew.add((Student) o);
             }
 
-            StudentsController studentsController = new StudentsController(unAskedAlert, unAnsweredAlert, studentsCrew, generateIfNotAskBox);
-            studentsForAsking = studentsController.getStudents();
+            StudentsService studentsService = new StudentsService(unAskedAlert, unAnsweredAlert, studentsCrew, generateIfNotAskBox);
+            studentsForAsking = studentsService.getStudents();
 
             if (studentsForAsking == null) return;
 

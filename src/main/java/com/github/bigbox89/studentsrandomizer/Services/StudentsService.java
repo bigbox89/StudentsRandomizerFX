@@ -1,4 +1,4 @@
-package com.github.bigbox89.studentsrandomizer.Controllers;
+package com.github.bigbox89.studentsrandomizer.Services;
 
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 import javafx.scene.control.Alert;
@@ -10,13 +10,13 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class StudentsController {
+public class StudentsService {
     Alert unAskedAlert;
     Alert unAnsweredAlert;
     List<Student> studentsCrew;
     CheckBox generateIfNotAskBox;
 
-    public StudentsController(Alert unAskedAlert, Alert unAnsweredAlert, List<Student> studentsCrew, CheckBox generateIfNotAskBox) {
+    public StudentsService(Alert unAskedAlert, Alert unAnsweredAlert, List<Student> studentsCrew, CheckBox generateIfNotAskBox) {
         this.unAskedAlert = unAskedAlert;
         this.unAnsweredAlert = unAnsweredAlert;
         this.studentsCrew = studentsCrew;

@@ -1,4 +1,4 @@
-package com.github.bigbox89.studentsrandomizer.Controllers;
+package com.github.bigbox89.studentsrandomizer.Services;
 
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 import javafx.geometry.Insets;
@@ -7,9 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public class GridPaneController {
+public class GridPaneService {
     private Student selStudent;
-    private  GridPane gridPane;
+    private final Student studentFromGrid;
+
+    private GridPane gridPane;
 
     private TextField commandTxt;
     private TextField nameTxt;
@@ -21,6 +23,7 @@ public class GridPaneController {
     private TextField raitTxt;
     private CheckBox askedBox;
     private CheckBox answeredBox;
+
 
     public GridPane getGridPane() {
         return gridPane;
@@ -38,7 +41,8 @@ public class GridPaneController {
         return answeredBox;
     }
 
-    public GridPaneController() {
+    public GridPaneService() {
+        this.studentFromGrid = new Student("0"," "," "," "," ","0","0",0,0,"0");
         this.commandTxt = new TextField();
         this.nameTxt = new TextField();
         this.secondNameTxt = new TextField();
@@ -75,6 +79,52 @@ public class GridPaneController {
         this.gridPane.add(askedBox, 1, 8);
         this.gridPane.add(new Label("Отвечал на вопрос :"), 0, 9);
         this.gridPane.add(answeredBox, 1, 9);
+    }
+
+    public GridPaneService(Student selStudent) {
+        this.studentFromGrid = new Student("0"," "," "," "," ","0","0",0,0,"0");
+
+        this.commandTxt = new TextField(selStudent.getCommand());
+        this.nameTxt = new TextField(selStudent.getName());
+        this.secondNameTxt = new TextField(selStudent.getSecondName());
+        this.testRaitingTxt = new TextField(Integer.toString(selStudent.getTestBall()));
+        this.numSkippingsTxt = new TextField(Integer.toString(selStudent.getNumSkippings()));
+        this.homeworkTxt = new TextField(selStudent.getHomework());
+        this.commentTxt = new TextField(selStudent.getComment());
+        this.raitTxt = new TextField(Float.toString(selStudent.getRating()));
+        this.askedBox = new CheckBox();
+        this.answeredBox = new CheckBox();
+
+        this.gridPane = new GridPane();
+        this.gridPane.setHgap(10);
+        this.gridPane.setVgap(10);
+        this.gridPane.setPadding(new Insets(20, 20, 10, 10));
+
+        this.gridPane.add(new Label("Команда :"), 0, 0);
+        this.gridPane.add(commandTxt, 1, 0);
+        this.gridPane.add(new Label("Имя :"), 0, 1);
+        this.gridPane.add(nameTxt, 1, 1);
+        this.gridPane.add(new Label("Фамилия :"), 0, 2);
+        this.gridPane.add(secondNameTxt, 1, 2);
+        this.gridPane.add(new Label("Баллы теста :"), 0, 3);
+        this.gridPane.add(testRaitingTxt, 1, 3);
+        this.gridPane.add(new Label("Рейтинг:"), 0, 4);
+        this.gridPane.add(raitTxt, 1, 4);
+        this.gridPane.add(new Label("Домашнее задание :"), 0, 5);
+        this.gridPane.add(homeworkTxt, 1, 5);
+        this.gridPane.add(new Label("Комментарий :"), 0, 6);
+        this.gridPane.add(commentTxt, 1, 6);
+        this.gridPane.add(new Label("Количество пропусков :"), 0, 7);
+        this.gridPane.add(numSkippingsTxt, 1, 7);
+        this.gridPane.add(new Label("Задавал вопрос :"), 0, 8);
+        this.gridPane.add(askedBox, 1, 8);
+        this.gridPane.add(new Label("Отвечал на вопрос :"), 0, 9);
+        this.gridPane.add(answeredBox, 1, 9);
+
+        if (selStudent.getAsked() == 1)
+            this.setAskedBox(true);
+        if (selStudent.getAnswered() == 1)
+            this.setAnsweredBox(true);
     }
 
     public void setAskedBox(boolean setBox) {
@@ -145,6 +195,27 @@ public class GridPaneController {
         return selStudent;
     }
 
+    public Student getStudentFromGrid() {
+        this.studentFromGrid.setCommand(this.getCommandTxt().getText());
+        this.studentFromGrid.setSecondName(this.getSecondNameTxt().getText());
+        this.studentFromGrid.setName(this.getNameTxt().getText());
+        this.studentFromGrid.setHomework(this.getHomeworkTxt().getText());
+        this.studentFromGrid.setComment(this.getCommentTxt().getText());
+        this.studentFromGrid.setTestBall(Integer.parseInt(this.getTestRaitingTxt().getText()));
+        this.studentFromGrid.setNumSkippings(Integer.parseInt(this.getCommandTxt().getText()));
+
+        if (this.getAskedBox().isSelected())
+            this.studentFromGrid.setAsked(1);
+
+        if (this.getAnsweredBox().isSelected())
+            this.studentFromGrid.setAnswered(1);
+
+        this.studentFromGrid.setRating(Float.parseFloat(this.getRaitTxt().getText()));
+
+
+        return studentFromGrid;
+    }
+
     public void setSelStudent(Student selStudent) {
         this.selStudent = selStudent;
     }
@@ -156,7 +227,5 @@ public class GridPaneController {
     public void setRaitTxt(TextField raitTxt) {
         this.raitTxt = raitTxt;
     }
-
-
 
 }

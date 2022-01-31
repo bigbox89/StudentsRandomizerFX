@@ -5,7 +5,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class UIController {
+public class StudentsTableController {
 
     public TableView<Student> getStudentTableView() {
         TableView<Student> studentsTable = new TableView<>();

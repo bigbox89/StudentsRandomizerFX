@@ -6,6 +6,7 @@ module com.github.bigbox89.studentsrandomizer {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.prefs;
+    requires java.persistence;
 
     opens com.github.bigbox89.studentsrandomizer to javafx.fxml;
     exports com.github.bigbox89.studentsrandomizer;

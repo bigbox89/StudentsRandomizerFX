@@ -205,10 +205,10 @@ public class GridPaneService {
         this.studentFromGrid.setNumSkippings(Integer.parseInt(this.getCommandTxt().getText()));
 
         if (this.getAskedBox().isSelected())
-            this.studentFromGrid.setAsked(1);
+            this.studentFromGrid.setAsked(true);
 
         if (this.getAnsweredBox().isSelected())
-            this.studentFromGrid.setAnswered(1);
+            this.studentFromGrid.setAnswered(true);
 
         this.studentFromGrid.setRating(Float.parseFloat(this.getRaitTxt().getText()));
 

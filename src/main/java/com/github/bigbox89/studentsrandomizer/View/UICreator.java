@@ -1,6 +1,7 @@
 package com.github.bigbox89.studentsrandomizer.View;
 
 import com.github.bigbox89.studentsrandomizer.Services.GridPaneService;
+import com.github.bigbox89.studentsrandomizer.Services.HibernateSessionFactory;
 import com.github.bigbox89.studentsrandomizer.Services.StudentsService;
 import com.github.bigbox89.studentsrandomizer.Model.Student;
 import com.github.bigbox89.studentsrandomizer.Repository.FileHandler;
@@ -20,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.hibernate.Session;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,7 @@ public class UICreator {
         column.setPercentWidth(15);
         grid.getColumnConstraints().add(column);
 
+
         column = new ColumnConstraints();
         column.setPercentWidth(15);
         grid.getColumnConstraints().add(column);
@@ -76,6 +79,9 @@ public class UICreator {
 
         MenuItem fileMItem = new MenuItem("Из файла");
         menuFile.getItems().addAll(fileMItem);
+
+        MenuItem dataBaseMItem = new MenuItem("Из базы");
+        menuFile.getItems().addAll(dataBaseMItem);
 
         Menu menuHelp = new Menu("Помощь");
         MenuItem aboutMItem = new MenuItem("О программе");
@@ -172,6 +178,25 @@ public class UICreator {
             infoTxt.setText("Файловый режим.");
             selectAllBtn.fire();
         });
+
+        dataBaseMItem.setOnAction(event -> {
+            System.out.println("Hibernate tutorial");
+
+            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+
+            session.beginTransaction();
+
+            Student studentEntity = new Student();
+
+            Object[] arr = studentsTable.getItems().toArray();
+
+            for (Object o : arr) {
+                session.save((Student) o);
+            }
+            session.getTransaction().commit();
+            session.close();
+        });
+
 
         aboutMItem.setOnAction(event -> {
             Alert aboutAlert = new Alert(AlertType.INFORMATION);
@@ -355,21 +380,15 @@ public class UICreator {
                 int asked;
                 if (askedBox.isSelected()) {
                     asked = 1;
-                    askingStudent.setAsked(asked);
+                    askingStudent.setAsked(askedBox.isSelected());
                     askingStudent.setRating(askingStudent.getRating() + Float.parseFloat(questionRate.getText()));
 
-                } else {
-                    asked = 0;
-                    askingStudent.setAsked(asked);
                 }
 
                 int answered = 0;
                 if (answeredBox.isSelected()) {
-                    answered = 1;
-                    answeringStudent.setAnswered(answered);
+                    answeringStudent.setAnswered(answeredBox.isSelected());
                     answeringStudent.setRating(answeringStudent.getRating() + Float.parseFloat(answerRate.getText()));
-                } else {
-                    answeringStudent.setAnswered(answered);
                 }
 
                 if (dialogButton == okBtn) {
@@ -395,8 +414,13 @@ public class UICreator {
         });
 
         Scene scene = new Scene(new VBox(), 1200, 500);
+
+        scene.getRoot().setStyle("-fx-font-family: 'serif'");
+
         ((VBox) scene.getRoot()).getChildren().addAll(menuBar, grid);
+
         primaryStage.setScene(scene);
+
         primaryStage.setTitle("Система опроса студентов");
 
         primaryStage.show();

@@ -64,19 +64,19 @@ public class FileHandler implements IHandler {
 	}
 
 	@Override
-	public void editStudent(Student newMovie, Student selectedMovie) {
+	public void editStudent(Student newStudent, Student selectedMovie) {
 		for (Student m : students) {
 			if (m.getCommand().equals(selectedMovie.getCommand()) && m.getTestBall().equals(selectedMovie.getTestBall())) {
-				m.setCommand(newMovie.getCommand());
-				m.setSecondName(newMovie.getSecondName());
-				m.setName(newMovie.getName());
-				m.setHomework(newMovie.getHomework());
-				m.setComment(newMovie.getComment());
-				m.setTestBall(newMovie.getTestBall());
-				m.setNumSkippings(newMovie.getNumSkippings());
-				m.setAsked(newMovie.getAsked());
-				m.setAnswered(newMovie.getAnswered());
-				m.setRating(newMovie.getRating());
+				m.setCommand(newStudent.getCommand());
+				m.setSecondName(newStudent.getSecondName());
+				m.setName(newStudent.getName());
+				m.setHomework(newStudent.getHomework());
+				m.setComment(newStudent.getComment());
+				m.setTestBall(newStudent.getTestBall());
+				m.setNumSkippings(newStudent.getNumSkippings());
+				m.setAsked(newStudent.getAsked() == 1);
+				m.setAnswered(newStudent.getAnswered() == 1);
+				m.setRating(newStudent.getRating());
 			}
 		}
 	}
@@ -92,8 +92,8 @@ public class FileHandler implements IHandler {
 				m.setComment(askedStudent.getComment());
 				m.setTestBall(askedStudent.getTestBall());
 				m.setNumSkippings(askedStudent.getNumSkippings());
-				m.setAsked(askedStudent.getAsked());
-				m.setAnswered(askedStudent.getAnswered());
+				m.setAsked(askedStudent.getAsked() == 1);
+				m.setAnswered(askedStudent.getAnswered() == 1);
 				m.setRating(askedStudent.getRating());
 			}
 
@@ -105,8 +105,8 @@ public class FileHandler implements IHandler {
 				m.setComment(answeredStudent.getComment());
 				m.setTestBall(answeredStudent.getTestBall());
 				m.setNumSkippings(answeredStudent.getNumSkippings());
-				m.setAsked(answeredStudent.getAsked());
-				m.setAnswered(answeredStudent.getAnswered());
+				m.setAsked(answeredStudent.getAsked() == 1);
+				m.setAnswered(answeredStudent.getAnswered() == 1);
 				m.setRating(answeredStudent.getRating());
 			}
 		}
@@ -162,7 +162,7 @@ public class FileHandler implements IHandler {
 	public void markAsked(Student m) {
 		for (Student mov : students) {
 			if (m.getCommand().equals(mov.getCommand()) && m.getTestBall().equals(mov.getTestBall())) {
-				mov.setAsked(1);
+				mov.setAsked(true);
 				break;
 			}
 		}
@@ -173,7 +173,7 @@ public class FileHandler implements IHandler {
 	public void markUnAsked(Student m) {
 		for (Student mov : students) {
 			if (m.getCommand().equals(mov.getCommand()) && m.getTestBall().equals(mov.getTestBall())) {
-				mov.setAsked(0);
+				mov.setAsked(false);
 				break;
 			}
 		}
@@ -184,7 +184,7 @@ public class FileHandler implements IHandler {
 	public void markAnswered(Student m) {
 		for (Student mov : students) {
 			if (m.getCommand().equals(mov.getCommand()) && m.getTestBall().equals(mov.getTestBall())) {
-				mov.setAnswered(1);
+				mov.setAnswered(true);
 				break;
 			}
 		}
@@ -195,7 +195,7 @@ public class FileHandler implements IHandler {
 	public void markUnAnswered(Student m) {
 		for (Student mov : students) {
 			if (m.getCommand().equals(mov.getCommand()) && m.getTestBall().equals(mov.getTestBall())) {
-				mov.setAnswered(0);
+				mov.setAnswered(false);
 				break;
 			}
 		}
